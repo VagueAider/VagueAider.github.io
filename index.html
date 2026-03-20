@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="VagueAider: Bridging Vague Intents for Mobile Agents">
+  <meta name="keywords" content="VLM, Mobile Agent, Autonomous GUI">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VagueAider</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  
+  <style>
+    /* 核心修复：清理 Results 区域的瀑布流图片布局 */
+    #main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .box-item {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      transition: transform 0.2s;
+    }
+
+    .box-item:hover {
+      transform: scale(1.02);
+    }
+
+    .pic img {
+      width: 450px;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+    }
+
+    /* 视频展示容器 */
+    .video-container {
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .comparison-box {
+      background: #fcfcfc;
+      border-radius: 12px;
+      border: 1px solid #eee !important;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">VagueAider:</h1>
+          <h2 class="title is-2 publication-title">Bridging User-Friendly Vague Intents and Agent-Friendly Executable Instructions for VLM-Based Mobile Agents</h2>
+          <div class="is-size-5 mb-6"> <span class="author-block">Anonymous Authors</span>
+          </div>
+          
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              </div>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="ai ai-arxiv"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fa fa-database"></i></span>
+                  <span>Dataset</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon"><i class="fa fa-tasks"></i></span>
+                  <span>Bench</span>
+                </a>
+              </span>
+            </div>
+          </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- #摘要部分 -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p class="is-size-4">
+            A VLM-based mobile agent interprets natural language instructions and directly operates a smartphone. Mobile agents often struggle with vague user instructions that lack explicit application contexts and execution details. Furthermore, we introduce VagueBench, a novel evaluation suite that systematically quantifies the impact of varying instruction ambiguity levels on agent success rates and operational efficiency. Furthermore, we propose VagueAider, a lightweight, training-free, and plug-and-play framework designed to bridge the semantic gap between ambiguous intent and executable GUI actions. Experimental results across VagueBenchmark and external benchmarks demonstrate that VagueAider consistently improves agents’ success rates by a large margin while significantly reducing overhead.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 0; padding-bottom: 2rem;"> <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        
+        <div class="publication-image">
+          <img src="./static/images/figure1.png" alt="VagueAider Teaser" style="width: 100%; height: auto; border-radius: 8px;">
+        </div>
+
+        <div class="content has-text-justified mt-4">
+          <p class="has-text-grey is-size-5">
+            <b>Figure 1:</b>  VagueAider can translate user-friendly vague intents into agent-friendly execution plans, bridging the semantic gap between natural language and GUI operations.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- #Baseline 性能对比部分 -->
+<section class="section">
+  <div class="container is-max-widescreen">
+    <div class="columns is-centered has-text-centered mb-5">
+      <div class="column is-full">
+        <h2 class="title is-3">🔥 VagueAider vs. Baseline</h2>
+        <p>Performance of User-Friendly vs. Agent-Friendly Instructions in VagueBench under Agent-Frame and Model-Based Settings</p>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <div class="box comparison-box" style="background-color: #fdfdfd; border-radius: 20px; border: 1px solid #eee;">
+          <h3 class="title is-4 has-text-centered mb-6">Case 1: "Sharing the song "Butterfly" with my friend zyy."</h3>
+          <div class="columns is-centered is-vcentered">
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-danger is-light is-medium mb-4">Baseline (AutoGlm-phone-agent)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/glm+share song.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+                <p class="is-size-6 mt-4 has-text-danger">❌ Multiple Retries: Lost in share channels</p>
+              </div>
+            </div>
+            <div class="column is-narrow is-hidden-mobile">
+              <div style="background: #eee; border-radius: 50%; width: 50px; height: 50px; line-height: 50px; text-align: center;"><i class="fas fa-arrow-right fa-lg" style="color: #666;"></i></div>
+            </div>
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-success is-light is-medium mb-4">VagueAider (Ours)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/GLM+VagueAider-share song.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+                <p class="is-size-6 mt-4 has-text-success">✅ Finish task With clear and detailed instructions </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered mt-5">
+      <div class="column is-10">
+        <div class="box comparison-box" style="background-color: #fdfdfd; border-radius: 20px; border: 1px solid #eee;">
+          <h3 class="title is-4 has-text-centered mb-6">Case 2: "Please record the weather in Pittsburgh for the next three days and provide me with a travel plan." </h3>
+          
+          <div class="columns is-centered is-vcentered">
+            
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-danger is-light is-medium mb-4">Baseline (AutoGlm-phone-agent)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/glm+travel.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+                <p class="is-size-6 mt-4 has-text-danger">❌ Abnormal Premature Termination: Lack of prior knowledge</p>
+              </div>
+            </div>
+    
+            <div class="column is-narrow is-hidden-mobile">
+              <div style="background: #eee; border-radius: 50%; width: 50px; height: 50px; line-height: 50px; text-align: center;">
+                <i class="fas fa-arrow-right fa-lg" style="color: #666;"></i>
+              </div>
+            </div>
+    
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-success is-light is-medium mb-4">VagueAider (Ours)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/glm+aider+travel.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+                <p class="is-size-6 mt-4 has-text-success">✅ Finish task With clear and detailed instructions</p>
+              </div>
+            </div>
+    
+          </div> 
+        </div> 
+      </div> 
+    </div>
+    
+
+
+    <!-- <br><hr style="width: 30%; margin: 2rem auto; opacity: 0.3;">
+
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <div class="box comparison-box" style="background-color: #fdfdfd; border-radius: 20px; border: 1px solid #eee;">
+          <h3 class="title is-4 has-text-centered mb-6">Case 3: "Order a spicy pizza" (Model-Based Setting)</h3>
+          <div class="columns is-centered is-vcentered">
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-danger is-light is-medium mb-4">Baseline (MobileAgentV3)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/model_based_base.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+                <p class="is-size-7 mt-4 has-text-danger">❌ Fails to execute steps</p>
+              </div>
+            </div>
+            <div class="column is-narrow is-hidden-mobile">
+              <div style="background: #eee; border-radius: 50%; width: 50px; height: 50px; line-height: 50px; text-align: center;"><i class="fas fa-arrow-right fa-lg" style="color: #666;"></i></div>
+            </div>
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-success is-light is-medium mb-4">VagueAider (Ours)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/model_based_ours.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+                <p class="is-size-7 mt-4 has-text-success">✅ Precise operation sequence</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered mt-5">
+      <div class="column is-10">
+        <div class="box comparison-box" style="background-color: #fdfdfd; border-radius: 20px; border: 1px solid #eee;">
+          <h3 class="title is-4 has-text-centered mb-6">Case 4: "Find a cheaper Joy-Con" (Model-Based Setting)</h3>
+          <div class="columns is-centered is-vcentered">
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-danger is-light is-medium mb-4">Baseline (PhoneAgent)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/model_case4_base.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+              </div>
+            </div>
+            <div class="column is-narrow is-hidden-mobile">
+              <div style="background: #eee; border-radius: 50%; width: 50px; height: 50px; line-height: 50px; text-align: center;"><i class="fas fa-arrow-right fa-lg" style="color: #666;"></i></div>
+            </div>
+            <div class="column is-5-tablet is-6-mobile">
+              <div class="has-text-centered">
+                <span class="tag is-success is-light is-medium mb-4">VagueAider (Ours)</span>
+                <div class="mobile-mockup">
+                  <div class="screen"><video autoplay controls muted loop playsinline><source src="./static/videos/model_case4_ours.mp4" type="video/mp4"></video></div>
+                  <div class="notch"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+<!-- --- 轮播图片放V3用
+    <section class="section">
+      <div class="container is-max-widescreen">
+        <div class="has-text-centered mt-6">
+          <h3 class="title is-3 mb-5">More Trajectories</h3>
+          <div id="results-carousel" class="carousel results-carousel">
+            <div class="carousel-item">
+              <img src="demos/ad_1.png" alt="Trajectory 1">
+            </div>
+            <div class="carousel-item">
+              <img src="demos/web_1.png" alt="Trajectory 2">
+            </div>
+            <div class="carousel-item">
+              <img src="demos/ad_2.png" alt="Trajectory 3">
+            </div>
+            </div>
+        </div>
+      </div>
+    </section> -->
+  </div>
+
+  <style>
+    .mobile-mockup {
+      position: relative; width: 100%; max-width: 260px; margin: 0 auto;
+      background: #333; padding: 10px; border-radius: 35px;
+      box-shadow: 0 0 0 2px #555, 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .mobile-mockup::before {
+      content: ''; position: absolute; left: -3px; top: 80px;
+      width: 3px; height: 40px; background: #444; border-radius: 2px 0 0 2px;
+    }
+    .screen {
+      position: relative; width: 100%; padding-top: 216%;
+      background: #000; border-radius: 25px; overflow: hidden; z-index: 1;
+    }
+    .screen video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .notch {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 40%; height: 25px; background: #333;
+      border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;
+    }
+    .notch::after {
+      content: ''; position: absolute; top: 5px; left: 50%; transform: translateX(-50%);
+      width: 30px; height: 4px; background: #222; border-radius: 2px;
+    }
+    /* 轮播图图片美化 */
+    .carousel-item img {
+      border-radius: 10px; border: 1px solid #eee;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 0 auto;
+    }
+  </style>
+</section>
+<!-- ------#vagueaider框架部分 -Methodology / Framework -->
+<section class="section">
+  <div class="container is-max-desktop">
+    
+    <div class="columns is-centered has-text-centered mb-5">
+      <div class="column is-full">
+        <h2 class="title is-3">Methodology</h2>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <div class="publication-image">
+          <img src="./static/images/framework.png" alt="VagueAider Framework" style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+        </div>
+        <p class="has-text-grey is-size-6 mt-3 has-text-centered">
+          <b>Figure 2:</b> Collection of APP Knowledge & VagueAider Framework。
+        </p>
+      </div>
+    </div>
+
+    <div class="columns is-centered mt-6">
+      <div class="column is-four-fifths">
+        <h3 class="title is-4 has-text-centered mb-4">Step 1: Collection of APP Knowledge</h3>
+        <div class="box" style="background-color: #f9f9f9; border-left: 5px solid #dbdbdb;">
+          <div class="content">
+            <p class="has-text-justified">Based on an automated pipeline using autonomous agents, we have built a knowledge base covering mainstream applications：</p>
+            <ul>
+              <li class="has-text-justified"><strong>App Info Generation:</strong> By leveraging the analytical capabilities of LLM combined with the ReAct framework, we can obtain the app's feature descriptions, icons, and core characteristics through websearch tool.</li>
+              <li class="has-text-justified"><strong>Action Path Capture:</strong> Employ a Mobile Agent to execute functional instructions, and extract from the execution trajectory a structured path sequence comprising "actions, objects, thoughts, execution, and states." </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered mt-6">
+      <div class="column is-four-fifths">
+        <h3 class="title is-4 has-text-centered mb-5">Step 2: Two-Stage Instruction Rewriting (VagueAider)</h3>
+        <div class="columns">
+          
+          <div class="column">
+            <div class="box" style="height: 100%; border-top: 4px solid #3273dc;">
+              <h4 class="title is-5">1. Intent Expansion</h4>
+              <p class="is-size-6 has-text-justified">
+                Utilize the common sense reasoning ability of Large Language Models, Expand the user's vague initial intent into a detailed description encompassing <b>specific application contexts</b> and <b>potential operational objectives</b>, complete the missing semantic information. 
+              </p>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="box" style="height: 100%; border-top: 4px solid #48c774;">
+              <h4 class="title is-5">2. Plan Refinement</h4>
+              <p class="is-size-6 has-text-justified">
+                Through an Instruction-Aware Refinement Mechanism, Translate the expanded intent into a sequence of <b>atomic, executable GUI instructions</b>, ensure that the Agent can accurately identify target components and execute smoothly. 
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    /* 优化英文排版，防止两端对齐产生的巨大间隙 */
+    .has-text-justified {
+      text-align: justify;
+      text-justify: inter-word; /* 针对单词间距进行优化 */
+      hyphens: auto;           /* 开启自动连字符 */
+      -webkit-hyphens: auto;
+      line-height: 1.6;        /* 适当增加行高，提升可读性 */
+    }
+  </style>
+</section>
+
+
+<!-- #vague-Bench部分 -->
+<section class="section" style="background-color: #fafafa;">
+  <div class="container is-max-desktop">
+    
+    <div class="columns is-centered has-text-centered mb-6">
+      <div class="column is-full">
+        <h2 class="title is-3">VagueBench</h2>
+        <p class="subtitle is-5">To explore the sensitivity and robustness of current mobile agents to ambiguous instructions, we propose VagueBench,
+          a set of instructions characterized by three distinct levels of ambiguity</p>
+      </div>
+    </div>
+
+    <div class="columns is-centered mb-6">
+      <div class="column is-12">
+        <div class="columns">
+          
+          <div class="column">
+            <div class="notification is-white" style="border: 1px solid #ddd; height: 100%;">
+              <div class="is-flex is-align-items-center mb-3">
+                <span class="tag is-info is-light is-large mr-2">L1</span>
+                <h4 class="title is-5 mb-0">User-Friendly-Ins</h4>
+              </div>
+              <p class="is-size-6 mb-3 has-text-justified-eng">Completely vague : it merely expresses user needs and lacks necessary information.</p>
+              <div class="p-2" style="background: #f0f6ff; border-radius: 5px; border-left: 3px solid #3273dc;">
+                <p class="is-size-6"><i>"I want to drink milk tea."</i></p>
+                <p class="mb-4"></p><p class="is-size-6"><i>"Fi me a cheaper Switch Toy-Con"</i></p>
+                <p class="mb-4"></p><p class="is-size-6"><i>"Check out the latest hit movies and ask ALEX for his opinion."</i></p>
+                <p class="mb-4"></p><p class="is-size-6"><i>"Recommend a cost-effective perfume to me and add it to my shopping cart."</i></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="notification is-white" style="border: 1px solid #ddd; height: 100%;">
+              <div class="is-flex is-align-items-center mb-3">
+                <span class="tag is-warning is-light is-large mr-2">L2</span>
+                <h4 class="title is-5 mb-0">Common-Ins</h4>
+              </div>
+              <p class="is-size-6 mb-3 has-text-justified-eng">Path Ambiguity: Although a navigation app is specified, no concrete steps are provided; the Agent must explore the path independently.</p>
+              <div class="p-2" style="background: #fff9eb; border-radius: 5px; border-left: 3px solid #ffdd57;">
+                <p class="is-size-6"><i>"Open the Maoyan app to check out the latest movies currently showing, then share them to WeChat to ask friend ALEX for his opinions."</i></p>
+                <p class="mb-4"></p><p class="is-size-6"><i>"Use a social media or browser app to find a highly-rated biography, then open an e-commerce app to add it to the cart”</i></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="notification is-white" style="border: 1px solid #ddd; height: 100%;">
+              <div class="is-flex is-align-items-center mb-3">
+                <span class="tag is-danger is-light is-large mr-2">L3</span>
+                <h4 class="title is-5 mb-0">Agent-Friendly-Ins</h4>
+              </div>
+              <p class="is-size-6 mb-3 has-text-justified-eng">Clear Expression: Understands user intents, identify the appropriate navigation app for the task and provide detailed step-by-step instructions for both app-inter and app-intra operations.</p>
+              <div class="p-2" style="background: #fff5f5; border-radius: 5px; border-left: 3px solid #ff3860;">
+                <p class="is-size-6 has-text-justified-eng"><i> "First, open a social media app like X or a browser like Google Chrome, tap the search bar, and type 'highly-rated biography' to find recommendations. After identifying a book title, open an e-commerce app like Amazon Shopping, tap its search box, type the book's name, and from the search results, tap the 'Add to Cart' button for the desired item.“</i></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full">
+        <div class="box">
+          <div class="columns is-vcentered is-mobile is-multiline has-text-centered">
+            <div class="column is-one-fifth-tablet is-half-mobile">
+              <p class="title is-3" style="color: #3273dc;">CN/EN</p>
+              <p class="heading">BILINGUAL CORPUS</p>
+            </div>
+            <div class="column is-one-fifth-tablet is-half-mobile">
+              <p class="title is-3" style="color: #48c774;">7</p>
+              <p class="heading">REAL-WORLD SCENARIOS</p>
+            </div>
+            <div class="column is-one-fifth-tablet is-half-mobile">
+              <p class="title is-3" style="color: #ff3860;">1~5</p>
+              <p class="heading">TASK NAVIGATION APP</p>
+            </div>
+            <div class="column is-one-fifth-tablet is-half-mobile">
+              <p class="title is-3" style="color: #8e44ad;">34</p>
+              <p class="heading">POPULAR APPS</p>
+            </div>
+            <div class="column is-one-fifth-tablet is-half-mobile">
+              <p class="title is-3" style="color: #f39c12;">40</p>
+              <p class="heading">TOTAL TASKS</p>
+            </div>
+          </div>
+          <div class="content mt-4">
+            <p class="is-size-6 has-text-centered has-text-grey has-text-justified-eng">
+              The GUI knowledge base covers major mobile ecosystems such as social networking, shopping, travel, and tools, Aims to evaluate the robustness of agents in real-world, complex environments.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- ------- gui_dataset 
+
+------- -->
+    <div class="mt-6">
+      <h3 class="title is-4 has-text-centered mb-5">GUI APP DATASET EXAMPLES</h3>
+      <div class="columns is-centered">
+        <div class="column is-5">
+          <div class="card" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); height: 100%;">
+            <header class="card-header" style="background: #f5f5f5;">
+              <p class="card-header-title is-size-6">Category : Video Entertainment</p>
+            </header>
+            <div class="card-content p-4" style="font-size: 0.95rem;">
+              <p class="mb-2 has-text-justified-eng"><span class="has-text-link"><strong>app_name :</strong></span> "YouTube"</p>
+              <p class="mb-2 has-text-justified-eng"><span class="has-text-warning-dark"><strong>brief_introduction :</strong></span> "A video-sharing platform rated 4.2 stars. It allows users to upload, view, and share videos; supports live streaming and content creation tools; and offers personalized recommendations and channel subscriptions."</p>
+              <p class="mb-3 has-text-justified-eng"><span class="has-text-danger"><strong>icon_description :</strong></span> "A red rectangular play button icon featuring a white triangle in the center, symbolizing video playback, set against a white background."</p>
+    
+              <p class="mb-1"><span class="has-text-danger"><strong>common_functions :</strong></span></p>
+              <ul class="ml-4 mb-4" style="list-style-type: disc; line-height: 1.4; font-size: 0.85rem;">
+                <li>Search for videos on YouTube</li>
+                <li>Upload a new video to your channel</li>
+                <li>Subscribe to specific channels or creators</li>
+                <li>Like a video</li>
+                <li>Change video quality</li>
+                <li>Add a comment to a video</li>
+                <li>Share a video with friends</li>
+                <li>Add a video to a playlist</li>
+                <li>View video details</li>
+              </ul>
+    
+              <p class="mb-2"><span class="has-text-danger"><strong>action_object_str :</strong></span></p>
+              
+              <div class="p-3 mb-3" style="background-color: #f8f9fa; border-radius: 6px; border: 1px solid #eee;">
+                <p class="is-size-7"><strong>"在 YouTube 上搜索视频":</strong></p>
+                <p class="is-size-7 has-text-grey-darker" style="white-space: pre-wrap; font-family: monospace;">["open youtube app", "tap search box at the right top", "type the search content", "tap the first search result", "swipe down to cross out ads", "tap a video to enter the video page"]</p>
+              </div>
+    
+              <div class="p-3" style="background-color: #f8f9fa; border-radius: 6px; border: 1px solid #eee;">
+                <p class="is-size-7"><strong>"上传新视频到您的频道":</strong></p>
+                <p class="is-size-7 has-text-grey-darker" style="white-space: pre-wrap; font-family: monospace;">["open youtube app", "tap the plus sign in circle at the bottom", "tap the video text button", "tap a video in the list", "tap the Next button", "tap the Upload button"]</p>
+              </div>
+              <div class="p-3" style="background-color: #f8f9fa; border-radius: 6px; border: 1px solid #eee;">
+                <p class="is-size-7"><strong>"分享视频":</strong></p>
+                <p class="is-size-7 has-text-grey-darker" style="white-space: pre-wrap; font-family: monospace;">["open youtube app","tap search box at the  right top","type the search content","tap the first search'result in the result list ","swipe down to cross out ads and see more results","tap a video in the search result to enter the video page","tap the right-pointing arrow with text 'share' in the right column","tap a social software to share the video to friends"]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <div class="column is-5">
+          <div class="card" style="border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); height: 100%;">
+            <header class="card-header" style="background: #f5f5f5;">
+              <p class="card-header-title is-size-6">Category : Social Media</p>
+            </header>
+            <div class="card-content p-4" style="font-size: 0.95rem;">
+              <p class="mb-2 has-text-justified-eng"><span class="has-text-link"><strong>app_name :</strong></span> "WeChat"</p>
+              <p class="mb-2 has-text-justified-eng"><span class="has-text-warning-dark"><strong>brief_introduction :</strong></span> "A widely popular social application designed for chatting and socializing with friends, featuring capabilities such as message list management, group chat interactions, and voice input to facilitate users' daily communication."</p>
+              <p class="mb-3 has-text-justified-eng"><span class="has-text-danger"><strong>icon_description :</strong></span> "A square icon with a green background featuring two white chat bubbles—simple, clear, and highly recognizable."</p>
+              
+              <p class="mb-1"><span class="has-text-danger"><strong>common_functions :</strong></span></p>
+              <ul class="ml-4 mb-4" style="list-style-type: disc; line-height: 1.4; font-size: 0.85rem;">
+                <li>Send Message/li>
+                <li>Voice Call</li>
+                <li>Post to Moments</li>
+                <li>Scan-to-Pay</li>
+                <li>Subscribe to Official Account/li>
+                <li>Use Mini Program</li>
+                <li>Add Friend</li>
+                <li>Like Moments Post</li>
+                <li>Send Red Packet</li>
+                <li>Comment on Moments Post</li>
+              </ul>
+    
+              <p class="mb-2"><span class="has-text-danger"><strong>action_object_str :</strong></span></p>
+              <div class="p-3" style="background-color: #f8f9fa; border-radius: 6px; border: 1px solid #eee;">
+                <p class="is-size-7"><strong>"发送微信消息":</strong></p>
+                <p class="is-size-7 has-text-grey-darker" style="white-space: pre-wrap; font-family: monospace;">["open the wechat app ","tap magnifier at the right top","type the friend name in the search box","tap a friend to enter chat page" ,"tap the input bar  at the bottom","type the chat message ","tap the text button 'send' in a green box"]</p>
+              </div>
+              <div class="p-3" style="background-color: #f8f9fa; border-radius: 6px; border: 1px solid #eee;">
+                <p class="is-size-7"><strong>"发布朋友圈":</strong></p>
+                <p class="is-size-7 has-text-grey-darker" style="white-space: pre-wrap; font-family: monospace;">["open the wechat app ","tap the compass symbol with 'fa xian' below it at the  bottom of the screen","tap the text button 'comments' with Kaleidoscope icon on the left","tap the white camera icon at the right corner of the top","tap the selection of text button ","swipe up and down to see more pictures","tap the blank circle in the upper right corner of the image to select it and click pictures","tap the text button 'wancheng'in a green box at the right bottom","tap the input box at the top and type the content of the moments","tap the text button 'fa biao' in a green box at the right top"]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <style>
+    /* 英文专用两端对齐：增加断词处理防止大空隙 */
+    .has-text-justified-eng {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      word-break: normal;
+      line-height: 1.5;
+    }
+  </style>
+</section>
+
+<!-- #exp结果部分
+<section class="section">
+    <div class="container is-max-desktop">
+      
+      <div class="columns is-centered has-text-centered mb-5">
+        <div class="column is-full">
+          <h2 class="title is-3">Experimental Results</h2>
+        </div>
+      </div>
+  
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="content">
+            <h3 class="title is-4 has-text-centered">Performance on VagueBench</h3>
+            <p class="is-size-6 mb-4">
+              我们在 VagueBench 上对比了不同基座 Agent 在使用 VagueAider 前后的性能表现。结果显示，VagueAider 在所有模糊等级（L1-L3）上均带来了显著的成功率提升。
+            </p>
+            
+            <div class="table-container">
+              <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth has-text-centered">
+                <thead>
+                  <tr style="background-color: #f5f5f5;">
+                    <th>Base Agent</th>
+                    <th>Framework</th>
+                    <th>L1 SR (%)</th>
+                    <th>L2 SR (%)</th>
+                    <th>L3 SR (%)</th>
+                    <th style="background-color: #edf2f7;">Total SR (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td rowspan="2" style="vertical-align : middle;">Mobile-Agent-v2</td>
+                    <td>Vanilla</td>
+                    <td>26.2</td>
+                    <td>11.5</td>
+                    <td>0.0</td>
+                    <td style="background-color: #edf2f7;">12.6</td>
+                  </tr>
+                  <tr>
+                    <td>+ <b>VagueAider</b></td>
+                    <td><b>45.9</b></td>
+                    <td><b>39.3</b></td>
+                    <td><b>36.7</b></td>
+                    <td style="background-color: #e6fffa;"><b>40.7 (+28.1)</b></td>
+                  </tr>
+                  
+                  <tr>
+                    <td rowspan="2" style="vertical-align : middle;">Mobile-Agent-v3</td>
+                    <td>Vanilla</td>
+                    <td>45.9</td>
+                    <td>34.4</td>
+                    <td>16.7</td>
+                    <td style="background-color: #edf2f7;">32.4</td>
+                  </tr>
+                  <tr>
+                    <td>+ <b>VagueAider</b></td>
+                    <td><b>65.6</b></td>
+                    <td><b>54.1</b></td>
+                    <td><b>50.0</b></td>
+                    <td style="background-color: #e6fffa;"><b>56.6 (+24.2)</b></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>A
+            <p class="is-size-7 has-text-grey mt-2">
+              * SR: Success Rate. 加粗表示在使用 VagueAider 后的最优表现。
+            </p>
+          </div>
+        </div>
+      </div>
+  
+      <div class="columns is-centered mt-6"> 
+        <div class="column is-four-fifths">
+          <div class="box" style="background-color: #f9f9f9; border-left: 5px solid #3273dc;">
+            <div class="content">
+              <h4 class="title is-5">Generalization & Efficiency</h4>
+              <p class="is-size-6">
+                除了 VagueBench，VagueAider 在外部基准测试（如 AitW）中同样表现出色。此外，由于意图被重写得更加精准，Agent 的无效探索步骤显著减少，
+                <b>平均 Token 消耗降低了约 15%-20%</b>，大大提升了部署效率。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </section> -->
+
+<!-- #引用部分 -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{vagueaider2026,
+  title={VagueAider: Bridging User-Friendly Vague Intents and Agent-Friendly Executable Instructions for VLM-Based Mobile Agents},
+  author={Anonymous},
+  year={2026}
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="Acknowledgement">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Acknowledgement</h2>
+    <p>
+      This website is adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>, licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+    </p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>© 2024 VagueAider Project</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 初始化轮播图  图片滑动效果
+    const carousels = bulmaCarousel.attach('#results-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 3,     // 桌面端同时显示 3 张
+      loop: true,          // 循环播放
+      infinite: true,
+      autoplay: true,      // 自动播放
+      autoplaySpeed: 3000,
+      breakpoints: [       // 响应式设置
+        { changePoint: 480, slidesToShow: 1 },
+        { changePoint: 768, slidesToShow: 2 }
+      ]
+    });
+  });
+</script>
+
+</body>
+</html>
